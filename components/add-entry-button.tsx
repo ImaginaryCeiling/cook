@@ -14,6 +14,10 @@ import { ImageUpload } from "@/components/image-upload";
 import { uploadEntry } from "@/app/actions";
 import { Plus } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { StarRating } from "@/components/star-rating";
+import { MealTypeSelect } from "@/components/meal-type-select";
+import { DatePicker } from "@/components/date-picker";
 
 export function AddEntryButton() {
   const [open, setOpen] = useState(false);
@@ -43,24 +47,60 @@ export function AddEntryButton() {
           <span className="sr-only">Add Entry</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add Cooking Entry</DialogTitle>
         </DialogHeader>
         <form action={handleSubmit} className="flex flex-col gap-6 py-4">
           <div className="flex flex-col gap-2">
-            <Label>Photo</Label>
+            <Label>Photo (Required)</Label>
             <ImageUpload name="image" />
           </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-2">
+              <Label>Date</Label>
+              <DatePicker name="cookedAt" defaultValue={new Date()} />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label>Meal Type</Label>
+              <MealTypeSelect name="mealType" />
+            </div>
+          </div>
+
           <div className="flex flex-col gap-2">
-            <Label htmlFor="caption">Caption (Optional)</Label>
+            <Label>Rating</Label>
+            <StarRating name="rating" />
+          </div>
+
+          <div className="flex flex-col gap-2">
+             <Label htmlFor="caption">Title / Caption</Label>
+             <Input 
+                id="caption" 
+                name="caption" 
+                placeholder="Spicy Tomato Pasta" 
+             />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="notes">Recipe Notes / Steps</Label>
             <Textarea
-              id="caption"
-              name="caption"
-              placeholder="What did you make?"
-              className="resize-none"
+              id="notes"
+              name="notes"
+              placeholder="Sautéed onions, added garlic..."
+              className="resize-none min-h-[100px]"
             />
           </div>
+
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="tags">Tags (comma separated)</Label>
+            <Input
+              id="tags"
+              name="tags"
+              placeholder="Italian, Quick, Vegetarian"
+            />
+          </div>
+
           <Button type="submit" disabled={loading}>
             {loading ? "Saving..." : "Save Entry"}
           </Button>
@@ -69,4 +109,3 @@ export function AddEntryButton() {
     </Dialog>
   );
 }
-

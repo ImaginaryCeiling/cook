@@ -13,7 +13,7 @@ export default async function Home() {
     allEntries = await db
       .select()
       .from(entries)
-      .orderBy(desc(entries.createdAt));
+      .orderBy(desc(entries.cookedAt));
   } catch (error: any) {
     if (error.message?.includes("missing_connection_string") || error.code === "missing_connection_string") {
       return (
