@@ -1,8 +1,9 @@
-import { pgTable, uuid, text, timestamp, integer } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, timestamp, integer, json } from "drizzle-orm/pg-core";
 
 export const entries = pgTable("entries", {
   id: uuid("id").defaultRandom().primaryKey(),
   imageUrl: text("image_url").notNull(),
+  extraImages: json("extra_images").$type<string[]>(), // Array of additional image URLs
   caption: text("caption"),
   
   // New Fields

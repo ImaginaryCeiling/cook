@@ -50,8 +50,8 @@ export function EditEntryButton({ id, initialData }: EditEntryButtonProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2">
-          <Pencil className="h-4 w-4" />
+        <Button variant="outline" size="sm" className="gap-2 text-black">
+          <Pencil className="h-4 w-4 " />
           Edit
         </Button>
       </DialogTrigger>

@@ -8,7 +8,8 @@ import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 
 export async function uploadEntry(formData: FormData) {
-  const imageFile = formData.get("image") as File;
+  // Use getAll to get multiple files
+  const imageFiles = formData.getAll("image") as File[];
   const caption = formData.get("caption") as string;
   const notes = formData.get("notes") as string;
   const rating = Number(formData.get("rating")) || null;
@@ -17,16 +18,26 @@ export async function uploadEntry(formData: FormData) {
   const cookedAtStr = formData.get("cookedAt") as string;
   const cookedAt = cookedAtStr ? new Date(cookedAtStr) : new Date();
 
-  if (!imageFile) {
+  if (!imageFiles || imageFiles.length === 0 || imageFiles[0].size === 0) {
     throw new Error("No image provided");
   }
 
-  const blob = await put(imageFile.name, imageFile, {
-    access: "public",
-  });
+  // Upload all images in parallel
+  const uploadPromises = imageFiles.map((file) => 
+    put(file.name, file, { access: "public" })
+  );
+  
+  const blobs = await Promise.all(uploadPromises);
+  const urls = blobs.map(b => b.url);
+
+  // First image is the cover
+  const imageUrl = urls[0];
+  // Rest are extra
+  const extraImages = urls.slice(1);
 
   await db.insert(entries).values({
-    imageUrl: blob.url,
+    imageUrl: imageUrl,
+    extraImages: extraImages.length > 0 ? extraImages : null,
     caption: caption || null,
     notes: notes || null,
     rating: rating,
@@ -46,7 +57,15 @@ export async function deleteEntry(id: string) {
     throw new Error("Entry not found");
   }
 
+  // Delete cover image
   await del(entry.imageUrl);
+  
+  // Delete extra images if any
+  if (entry.extraImages && Array.isArray(entry.extraImages)) {
+    const extras = entry.extraImages as string[];
+    await Promise.all(extras.map(url => del(url)));
+  }
+
   await db.delete(entries).where(eq(entries.id, id));
 
   revalidatePath("/");
@@ -61,8 +80,6 @@ export async function updateEntry(id: string, formData: FormData) {
   const mealType = formData.get("mealType") as string;
   const cookedAtStr = formData.get("cookedAt") as string;
   
-  // Only update cookedAt if provided, otherwise keep existing (logic handled in UI usually, but safe here)
-  // Actually, standard update flow replaces values. We'll check if it's in the form.
   const updateData: any = {
     caption: caption || null,
     notes: notes || null,

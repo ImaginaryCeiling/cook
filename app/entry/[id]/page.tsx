@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Calendar, Clock, Star, Utensils } from "lucide-react";
+import { ArrowLeft, Calendar, Star } from "lucide-react";
 import { notFound } from "next/navigation";
 import { DeleteEntryButton } from "@/components/delete-entry-button";
 import { EditEntryButton } from "@/components/edit-entry-button";
@@ -20,6 +20,7 @@ export default async function EntryPage({ params }: { params: Promise<{ id: stri
   }
 
   const tagList = entry.tags ? entry.tags.split(",").map(t => t.trim()) : [];
+  const extraImages = entry.extraImages as string[] | null;
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -31,18 +32,38 @@ export default async function EntryPage({ params }: { params: Promise<{ id: stri
         </Link>
       </header>
 
-      <div className="flex min-h-screen flex-col items-center p-4 pb-20">
-        <div className="relative aspect-[3/4] w-full max-w-2xl overflow-hidden rounded-lg shadow-2xl bg-zinc-900 mt-16">
-           <Image
-             src={entry.imageUrl}
-             alt={entry.caption || "Detail view"}
-             fill
-             className="object-contain"
-             priority
-           />
+      <div className="flex min-h-screen flex-col items-center p-4">
+        {/* Main Image Container */}
+        <div className="relative w-full max-w-2xl mt-14 mb-6">
+           <div className="relative w-full flex justify-center bg-zinc-900 rounded-lg overflow-hidden">
+             {/* eslint-disable-next-line @next/next/no-img-element */}
+             <img
+               src={entry.imageUrl}
+               alt={entry.caption || "Detail view"}
+               className="max-h-[60vh] w-auto object-contain rounded-lg shadow-2xl"
+             />
+           </div>
         </div>
+
+        {/* Gallery of Extra Images */}
+        {extraImages && extraImages.length > 0 && (
+          <div className="w-full max-w-2xl mb-8">
+             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+               {extraImages.map((url, idx) => (
+                  <div key={idx} className="relative aspect-square bg-zinc-900 rounded-md overflow-hidden">
+                     <Image
+                       src={url}
+                       alt={`Gallery image ${idx + 1}`}
+                       fill
+                       className="object-cover"
+                     />
+                  </div>
+               ))}
+             </div>
+          </div>
+        )}
         
-        <div className="mt-8 max-w-2xl w-full flex flex-col gap-6">
+        <div className="max-w-2xl w-full flex flex-col gap-6 pb-20">
           
           {/* Header Info */}
           <div className="flex flex-col gap-2 items-center text-center">
@@ -58,22 +79,24 @@ export default async function EntryPage({ params }: { params: Promise<{ id: stri
                 </time>
              </div>
              
-             {entry.mealType && (
-               <Badge variant="outline" className="text-zinc-300 border-zinc-700 w-fit mx-auto">
-                 {entry.mealType}
-               </Badge>
-             )}
-
-             {entry.rating && entry.rating > 0 && (
-               <div className="flex gap-1 text-yellow-500">
-                 {[...Array(5)].map((_, i) => (
-                   <Star 
-                     key={i} 
-                     className={`h-5 w-5 ${i < (entry.rating || 0) ? "fill-current" : "text-zinc-800 fill-zinc-800"}`} 
-                   />
-                 ))}
-               </div>
-             )}
+             <div className="flex gap-2 items-center">
+                {entry.mealType && (
+                  <Badge variant="outline" className="text-zinc-300 border-zinc-700 w-fit">
+                    {entry.mealType}
+                  </Badge>
+                )}
+                
+                {entry.rating && entry.rating > 0 && (
+                  <div className="flex gap-1 text-yellow-500">
+                    {[...Array(5)].map((_, i) => (
+                      <Star 
+                        key={i} 
+                        className={`h-4 w-4 ${i < (entry.rating || 0) ? "fill-current" : "text-zinc-800 fill-zinc-800"}`} 
+                      />
+                    ))}
+                  </div>
+                )}
+             </div>
           </div>
 
           {/* Main Content */}
@@ -104,7 +127,7 @@ export default async function EntryPage({ params }: { params: Promise<{ id: stri
             )}
           </div>
 
-          <div className="flex justify-center gap-4 pt-8">
+          <div className="flex justify-center gap-4 pt-4">
              <EditEntryButton 
                id={entry.id} 
                initialData={{
