@@ -6,6 +6,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
+import { DeleteEntryButton } from "@/components/delete-entry-button";
+import { EditEntryButton } from "@/components/edit-entry-button";
 
 export default async function EntryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -18,8 +20,8 @@ export default async function EntryPage({ params }: { params: Promise<{ id: stri
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <header className="fixed top-0 left-0 z-10 p-4">
-        <Link href="/">
+      <header className="fixed top-0 left-0 z-10 p-4 flex w-full justify-between items-center pointer-events-none">
+        <Link href="/" className="pointer-events-auto">
           <Button variant="ghost" size="icon" className="rounded-full bg-black/50 hover:bg-black/70 text-white">
             <ArrowLeft className="h-6 w-6" />
           </Button>
@@ -37,7 +39,7 @@ export default async function EntryPage({ params }: { params: Promise<{ id: stri
            />
         </div>
         
-        <div className="mt-8 max-w-2xl text-center">
+        <div className="mt-8 max-w-2xl text-center w-full">
           <time className="text-sm font-medium text-zinc-400">
              {new Date(entry.createdAt).toLocaleDateString(undefined, {
                weekday: 'long',
@@ -53,9 +55,13 @@ export default async function EntryPage({ params }: { params: Promise<{ id: stri
               {entry.caption}
             </p>
           )}
+
+          <div className="mt-8 flex justify-center gap-4">
+             <EditEntryButton id={entry.id} initialCaption={entry.caption} />
+             <DeleteEntryButton id={entry.id} />
+          </div>
         </div>
       </div>
     </div>
   );
 }
-
