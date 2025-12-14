@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { StarRating } from "@/components/star-rating";
 import { MealTypeSelect } from "@/components/meal-type-select";
 import { DatePicker } from "@/components/date-picker";
+import { TagsInput } from "@/components/tags-input";
 
 export function AddEntryButton() {
   const [open, setOpen] = useState(false);
@@ -53,7 +54,7 @@ export function AddEntryButton() {
         </DialogHeader>
         <form action={handleSubmit} className="flex flex-col gap-6 py-4">
           <div className="flex flex-col gap-2">
-            <Label>Photo (Required)</Label>
+            <Label>Photos (Required)</Label>
             <ImageUpload name="image" />
           </div>
 
@@ -93,12 +94,8 @@ export function AddEntryButton() {
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="tags">Tags (comma separated)</Label>
-            <Input
-              id="tags"
-              name="tags"
-              placeholder="Italian, Quick, Vegetarian"
-            />
+            <Label htmlFor="tags">Tags</Label>
+            <TagsInput name="tags" />
           </div>
 
           <Button type="submit" disabled={loading}>

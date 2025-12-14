@@ -17,6 +17,7 @@ import { Pencil } from "lucide-react";
 import { StarRating } from "@/components/star-rating";
 import { MealTypeSelect } from "@/components/meal-type-select";
 import { DatePicker } from "@/components/date-picker";
+import { TagsInput } from "@/components/tags-input";
 
 interface EditEntryButtonProps {
   id: string;
@@ -50,8 +51,8 @@ export function EditEntryButton({ id, initialData }: EditEntryButtonProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2 text-black">
-          <Pencil className="h-4 w-4 " />
+        <Button variant="outline" size="sm" className="gap-2">
+          <Pencil className="h-4 w-4" />
           Edit
         </Button>
       </DialogTrigger>
@@ -99,13 +100,8 @@ export function EditEntryButton({ id, initialData }: EditEntryButtonProps) {
           </div>
 
           <div className="flex flex-col gap-2">
-             <Label htmlFor="tags">Tags (comma separated)</Label>
-             <Input
-               id="tags"
-               name="tags"
-               defaultValue={initialData.tags || ""}
-               placeholder="Italian, Quick, Vegetarian"
-             />
+             <Label htmlFor="tags">Tags</Label>
+             <TagsInput name="tags" defaultValue={initialData.tags} />
           </div>
 
           <Button type="submit" disabled={loading}>
