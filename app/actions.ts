@@ -8,7 +8,6 @@ import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 
 export async function uploadEntry(formData: FormData) {
-  // Use getAll to get multiple files
   const imageFiles = formData.getAll("image") as File[];
   const caption = formData.get("caption") as string;
   const notes = formData.get("notes") as string;
@@ -18,11 +17,15 @@ export async function uploadEntry(formData: FormData) {
   const cookedAtStr = formData.get("cookedAt") as string;
   const cookedAt = cookedAtStr ? new Date(cookedAtStr) : new Date();
 
+  // New fields
+  const cuisine = formData.get("cuisine") as string;
+  const cookingMethod = formData.get("cookingMethod") as string;
+  const ingredients = formData.get("ingredients") as string;
+
   if (!imageFiles || imageFiles.length === 0 || imageFiles[0].size === 0) {
     throw new Error("No image provided");
   }
 
-  // Upload all images in parallel
   const uploadPromises = imageFiles.map((file) => 
     put(file.name, file, { access: "public" })
   );
@@ -30,9 +33,7 @@ export async function uploadEntry(formData: FormData) {
   const blobs = await Promise.all(uploadPromises);
   const urls = blobs.map(b => b.url);
 
-  // First image is the cover
   const imageUrl = urls[0];
-  // Rest are extra
   const extraImages = urls.slice(1);
 
   await db.insert(entries).values({
@@ -44,6 +45,9 @@ export async function uploadEntry(formData: FormData) {
     tags: tags || null,
     mealType: mealType || null,
     cookedAt: cookedAt,
+    cuisine: cuisine || null,
+    cookingMethod: cookingMethod || null,
+    ingredients: ingredients || null,
   });
 
   revalidatePath("/");
@@ -57,10 +61,8 @@ export async function deleteEntry(id: string) {
     throw new Error("Entry not found");
   }
 
-  // Delete cover image
   await del(entry.imageUrl);
   
-  // Delete extra images if any
   if (entry.extraImages && Array.isArray(entry.extraImages)) {
     const extras = entry.extraImages as string[];
     await Promise.all(extras.map(url => del(url)));
@@ -80,12 +82,19 @@ export async function updateEntry(id: string, formData: FormData) {
   const mealType = formData.get("mealType") as string;
   const cookedAtStr = formData.get("cookedAt") as string;
   
+  const cuisine = formData.get("cuisine") as string;
+  const cookingMethod = formData.get("cookingMethod") as string;
+  const ingredients = formData.get("ingredients") as string;
+
   const updateData: any = {
     caption: caption || null,
     notes: notes || null,
     rating: rating,
     tags: tags || null,
     mealType: mealType || null,
+    cuisine: cuisine || null,
+    cookingMethod: cookingMethod || null,
+    ingredients: ingredients || null,
   };
 
   if (cookedAtStr) {

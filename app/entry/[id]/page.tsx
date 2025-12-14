@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Calendar, Star } from "lucide-react";
+import { ArrowLeft, Calendar, Star, Utensils, ChefHat, ScrollText } from "lucide-react";
 import { notFound } from "next/navigation";
 import { DeleteEntryButton } from "@/components/delete-entry-button";
 import { EditEntryButton } from "@/components/edit-entry-button";
@@ -79,15 +79,25 @@ export default async function EntryPage({ params }: { params: Promise<{ id: stri
                 </time>
              </div>
              
-             <div className="flex gap-2 items-center">
+             <div className="flex flex-wrap gap-2 items-center justify-center">
+                {entry.cuisine && (
+                  <Badge variant="outline" className="text-zinc-300 border-zinc-700 bg-zinc-900/50">
+                    {entry.cuisine}
+                  </Badge>
+                )}
+                {entry.cookingMethod && (
+                  <Badge variant="outline" className="text-zinc-300 border-zinc-700 bg-zinc-900/50">
+                    {entry.cookingMethod}
+                  </Badge>
+                )}
                 {entry.mealType && (
-                  <Badge variant="outline" className="text-zinc-300 border-zinc-700 w-fit">
+                  <Badge variant="outline" className="text-zinc-300 border-zinc-700 bg-zinc-900/50">
                     {entry.mealType}
                   </Badge>
                 )}
                 
                 {entry.rating && entry.rating > 0 && (
-                  <div className="flex gap-1 text-yellow-500">
+                  <div className="flex gap-1 text-yellow-500 ml-2">
                     {[...Array(5)].map((_, i) => (
                       <Star 
                         key={i} 
@@ -100,24 +110,39 @@ export default async function EntryPage({ params }: { params: Promise<{ id: stri
           </div>
 
           {/* Main Content */}
-          <div className="space-y-4 px-2">
+          <div className="space-y-6 px-2">
             {entry.caption && (
               <h1 className="text-2xl font-light text-center leading-relaxed text-white">
                 {entry.caption}
               </h1>
             )}
             
+            {entry.ingredients && (
+               <div className="bg-zinc-900/30 p-4 rounded-lg border border-zinc-800/50">
+                  <div className="flex items-center gap-2 text-sm font-medium text-zinc-400 mb-2 uppercase tracking-wider">
+                    <Utensils className="h-4 w-4" />
+                    <h3>Ingredients</h3>
+                  </div>
+                  <p className="text-zinc-300 whitespace-pre-wrap leading-relaxed font-light pl-1">
+                    {entry.ingredients}
+                  </p>
+               </div>
+            )}
+
             {entry.notes && (
-               <div className="bg-zinc-900/50 p-4 rounded-lg border border-zinc-800">
-                  <h3 className="text-sm font-medium text-zinc-400 mb-2 uppercase tracking-wider">Notes</h3>
-                  <p className="text-zinc-300 whitespace-pre-wrap leading-relaxed">
+               <div className="bg-zinc-900/30 p-4 rounded-lg border border-zinc-800/50">
+                  <div className="flex items-center gap-2 text-sm font-medium text-zinc-400 mb-2 uppercase tracking-wider">
+                    <ScrollText className="h-4 w-4" />
+                    <h3>Steps & Notes</h3>
+                  </div>
+                  <p className="text-zinc-300 whitespace-pre-wrap leading-relaxed font-light pl-1">
                     {entry.notes}
                   </p>
                </div>
             )}
 
             {tagList.length > 0 && (
-               <div className="flex flex-wrap gap-2 justify-center">
+               <div className="flex flex-wrap gap-2 justify-center pt-2">
                   {tagList.map(tag => (
                      <Badge key={tag} variant="secondary" className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300">
                         {tag}
@@ -127,7 +152,7 @@ export default async function EntryPage({ params }: { params: Promise<{ id: stri
             )}
           </div>
 
-          <div className="flex justify-center gap-4 pt-4">
+          <div className="flex justify-center gap-4 pt-8">
              <EditEntryButton 
                id={entry.id} 
                initialData={{
@@ -136,7 +161,10 @@ export default async function EntryPage({ params }: { params: Promise<{ id: stri
                  rating: entry.rating,
                  tags: entry.tags,
                  mealType: entry.mealType,
-                 cookedAt: entry.cookedAt
+                 cookedAt: entry.cookedAt,
+                 cuisine: entry.cuisine,
+                 cookingMethod: entry.cookingMethod,
+                 ingredients: entry.ingredients
                }}
              />
              <DeleteEntryButton id={entry.id} />

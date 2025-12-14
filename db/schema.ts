@@ -6,12 +6,19 @@ export const entries = pgTable("entries", {
   extraImages: json("extra_images").$type<string[]>(), // Array of additional image URLs
   caption: text("caption"),
   
-  // New Fields
+  // Structured Metadata
   notes: text("notes"),
+  ingredients: text("ingredients"), // Storing as newline-separated or simple text block
+  
+  // Categorization
   rating: integer("rating"),
-  tags: text("tags"), // Storing as comma-separated string for simplicity in MVP
+  tags: text("tags"), // General tags
+  
+  // Specific Classifications
+  cuisine: text("cuisine"), // e.g. Italian, Mexican
+  cookingMethod: text("cooking_method"), // e.g. Grilled, Baked
   mealType: text("meal_type"), // breakfast, lunch, dinner, snack
+  
   cookedAt: timestamp("cooked_at").defaultNow().notNull(),
-
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

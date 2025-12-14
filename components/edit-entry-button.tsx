@@ -28,6 +28,9 @@ interface EditEntryButtonProps {
     tags: string | null;
     mealType: string | null;
     cookedAt: Date;
+    cuisine: string | null;
+    cookingMethod: string | null;
+    ingredients: string | null;
   };
 }
 
@@ -73,6 +76,17 @@ export function EditEntryButton({ id, initialData }: EditEntryButtonProps) {
              </div>
           </div>
 
+          <div className="grid grid-cols-2 gap-4">
+             <div className="flex flex-col gap-2">
+                <Label htmlFor="cuisine">Cuisine</Label>
+                <Input id="cuisine" name="cuisine" defaultValue={initialData.cuisine || ""} placeholder="e.g. Italian" />
+             </div>
+             <div className="flex flex-col gap-2">
+                <Label htmlFor="cookingMethod">Method</Label>
+                <Input id="cookingMethod" name="cookingMethod" defaultValue={initialData.cookingMethod || ""} placeholder="e.g. Grilled" />
+             </div>
+          </div>
+
           <div className="flex flex-col gap-2">
              <Label>Rating</Label>
              <StarRating name="rating" defaultValue={initialData.rating} />
@@ -85,6 +99,17 @@ export function EditEntryButton({ id, initialData }: EditEntryButtonProps) {
               name="caption"
               defaultValue={initialData.caption || ""}
               placeholder="What did you make?"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="ingredients">Ingredients (Optional)</Label>
+            <Textarea
+              id="ingredients"
+              name="ingredients"
+              defaultValue={initialData.ingredients || ""}
+              placeholder="- 2 onions&#10;- 1 cup rice&#10;- Olive oil"
+              className="resize-none min-h-[80px]"
             />
           </div>
 

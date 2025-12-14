@@ -48,7 +48,7 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-background pb-24">
       <header className="sticky top-0 z-10 border-b bg-background/80 px-6 py-4 backdrop-blur-md">
-        <h1 className="text-xl font-semibold tracking-tight">Kitchen Timeline</h1>
+        <h1 className="text-xl font-semibold tracking-tight">Brian's Cooking Diary</h1>
       </header>
       
       <div className="mx-auto max-w-md px-4 py-6">

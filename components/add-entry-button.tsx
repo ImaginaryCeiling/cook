@@ -69,6 +69,17 @@ export function AddEntryButton() {
             </div>
           </div>
 
+          <div className="grid grid-cols-2 gap-4">
+             <div className="flex flex-col gap-2">
+                <Label htmlFor="cuisine">Cuisine</Label>
+                <Input id="cuisine" name="cuisine" placeholder="e.g. Italian" />
+             </div>
+             <div className="flex flex-col gap-2">
+                <Label htmlFor="cookingMethod">Method</Label>
+                <Input id="cookingMethod" name="cookingMethod" placeholder="e.g. Grilled" />
+             </div>
+          </div>
+
           <div className="flex flex-col gap-2">
             <Label>Rating</Label>
             <StarRating name="rating" />
@@ -81,6 +92,16 @@ export function AddEntryButton() {
                 name="caption" 
                 placeholder="Spicy Tomato Pasta" 
              />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="ingredients">Ingredients (Optional)</Label>
+            <Textarea
+              id="ingredients"
+              name="ingredients"
+              placeholder="- 2 onions&#10;- 1 cup rice&#10;- Olive oil"
+              className="resize-none min-h-[80px]"
+            />
           </div>
 
           <div className="flex flex-col gap-2">
